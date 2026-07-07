@@ -16,6 +16,8 @@ import {
   LedgerId,
   Long,
   TokenId,
+  Transaction,
+  TransactionId,
   type Signer,
 } from '@hiero-ledger/sdk';
 
@@ -118,20 +120,39 @@ async function refreshBalance() {
 }
 
 // ── contract calls: approve allowance, then unwrapWhbar(wad) ────────
+// The wallet library's populateTransaction doesn't set node accounts,
+// so freezeWithSigner fails ("nodeAccountId must be set"). We set the
+// transaction ID and node accounts ourselves and freeze manually.
+const NODE_ACCOUNTS = [3, 4, 5].map((n) => new AccountId(n)); // valid on mainnet & testnet
+
+function prepare<T extends Transaction>(tx: T, owner: string): T {
+  tx.setTransactionId(TransactionId.generate(AccountId.fromString(owner)));
+  tx.setNodeAccountIds(NODE_ACCOUNTS);
+  return tx.freeze() as T;
+}
+
 async function unwrap(signer: Signer, owner: string, wad: Long) {
   status('Step 1/2 — approve the allowance in your wallet…');
-  const approve = await new AccountAllowanceApproveTransaction()
-    .approveTokenAllowance(TokenId.fromString(CFG.token), AccountId.fromString(owner), AccountId.fromString(CFG.helper), wad)
-    .freezeWithSigner(signer);
+  const approve = prepare(
+    new AccountAllowanceApproveTransaction().approveTokenAllowance(
+      TokenId.fromString(CFG.token),
+      AccountId.fromString(owner),
+      AccountId.fromString(CFG.helper),
+      wad,
+    ),
+    owner,
+  );
   const approveReceipt = await (await approve.executeWithSigner(signer)).getReceiptWithSigner(signer);
   if (approveReceipt.status.toString() !== 'SUCCESS') throw new Error(`Approval failed: ${approveReceipt.status}`);
 
   status('Step 2/2 — confirm the unwrap in your wallet…');
-  const call = await new ContractExecuteTransaction()
-    .setContractId(ContractId.fromString(CFG.helper))
-    .setGas(1_000_000)
-    .setFunction('unwrapWhbar', new ContractFunctionParameters().addUint256(wad))
-    .freezeWithSigner(signer);
+  const call = prepare(
+    new ContractExecuteTransaction()
+      .setContractId(ContractId.fromString(CFG.helper))
+      .setGas(1_000_000)
+      .setFunction('unwrapWhbar', new ContractFunctionParameters().addUint256(wad)),
+    owner,
+  );
   const receipt = await (await call.executeWithSigner(signer)).getReceiptWithSigner(signer);
   if (receipt.status.toString() !== 'SUCCESS') throw new Error(`Unwrap failed: ${receipt.status}`);
 }
