@@ -1,13 +1,11 @@
-/* WHBAR Unwrapper â€” monochrome terminal-receipt */
-
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
 :root {
-  --black: #000;
-  --white: #fff;
-  --grey: #8a8a8a;      /* secondary text */
-  --line: #2c2c2c;      /* hairlines */
-  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --bg: #10141c;
+  --panel: #171c27;
+  --line: #262e3e;
+  --text: #e8ecf4;
+  --dim: #8b94a7;
+  --accent: #6fd3c7;
+  --err: #e5716b;
 }
 
 * { box-sizing: border-box; }
@@ -17,153 +15,52 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: var(--black);
-  color: var(--white);
-  font: 400 14px/1.6 var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, sans-serif;
   padding: 16px;
-  -webkit-font-smoothing: antialiased;
 }
 
 .card {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
+  padding: 20px;
   border: 1px solid var(--line);
-  padding: 28px 24px;
+  border-radius: 14px;
+  background: var(--panel);
   display: grid;
-  gap: 20px;
-  background: var(--black);
+  gap: 14px;
 }
 
-/* header */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 16px;
-}
-h1 {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
+header { display: flex; justify-content: space-between; align-items: baseline; }
+h1 { margin: 0; font-size: 17px; font-weight: 600; }
+
 .badge {
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-size: 11px;
   text-transform: uppercase;
-  color: var(--grey);
+  letter-spacing: 0.08em;
+  color: var(--dim);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 8px;
 }
-.badge::before { content: 'Â· '; }
 
-.mono { font-family: var(--mono); }
+.mono { font-family: ui-monospace, monospace; }
 
-#wallet-ui { display: grid; gap: 20px; }
+#wallet-ui { display: grid; gap: 14px; }
 #wallet-ui[hidden] { display: none; }
 
-/* connected account line */
 .account-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
   font-size: 12px;
-  color: var(--grey);
+  color: var(--dim);
 }
 
-/* the centerpiece: oversized amount */
 .input-row {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  border-bottom: 1px solid var(--white);
-  padding: 4px 0 10px;
-}
-.input-row input {
-  flex: 1;
-  min-width: 0;
-  background: none;
-  border: 0;
-  outline: none;
-  color: var(--white);
-  font: 500 34px/1.1 var(--mono);
-  caret-color: var(--white);
-}
-.input-row input::placeholder { color: var(--line); }
-.unit {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--grey);
-}
-
-.hint {
-  margin: 0;
-  font-size: 12px;
-  color: var(--grey);
-}
-.hint strong {
-  color: var(--white);
-  font-weight: 500;
-}
-
-/* buttons: white block, inverts on hover */
-button {
-  border: 1px solid var(--white);
-  border-radius: 0;
-  padding: 14px;
-  font: 600 12px var(--mono);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: var(--white);
-  color: var(--black);
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-}
-button:hover:not(:disabled) {
-  background: var(--black);
-  color: var(--white);
-}
-button:disabled {
-  background: var(--black);
-  color: var(--grey);
-  border-color: var(--line);
-  cursor: not-allowed;
-}
-button:focus-visible {
-  outline: 1px solid var(--white);
-  outline-offset: 3px;
-}
-
-/* text buttons (balance / max) */
-.link {
-  background: none !important;
-  border: 0 !important;
-  padding: 0;
-  color: var(--white) !important;
-  font: 400 12px var(--mono);
-  letter-spacing: 0;
-  text-transform: none;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.link:hover { color: var(--grey) !important; }
-
-/* status: monochrome, prefixed */
-.msg {
-  margin: 0;
-  font-size: 12px;
-  color: var(--grey);
-  overflow-wrap: break-word;
-}
-.msg.ok { color: var(--white); }
-.msg.ok::before { content: 'âœ“ '; }
-.msg.err {
-  color: var(--white);
-  border-left: 2px solid var(--white);
-  padding-left: 10px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  button { transition: none; }
-}
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
