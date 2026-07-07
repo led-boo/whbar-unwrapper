@@ -26,6 +26,7 @@ body {
 .card {
   width: 100%;
   max-width: 460px;
+  overflow: hidden;      /* belt-and-braces: nothing escapes the border */
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 18px;
@@ -59,15 +60,19 @@ h1 {
 
 .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
 
+/* grid/flex children may shrink below content width â€” prevents overflow */
+.card > *, #wallet-ui > *, .account-row > * { min-width: 0; }
+
 #wallet-ui { display: grid; gap: 20px; }
 #wallet-ui[hidden] { display: none; }
 
 /* connected account line */
 .account-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
+  gap: 6px 12px;
   font-size: 15px;
   color: var(--dim);
 }
@@ -144,8 +149,9 @@ button:focus-visible {
   color: var(--accent);
   padding: 0;
   font-weight: 500;
-  font-size: 15px;
-  white-space: nowrap;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 .link:hover { text-decoration: underline; text-underline-offset: 3px; filter: none; }
 
