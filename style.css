@@ -60,7 +60,7 @@ h1 {
 
 .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
 
-/* grid/flex children may shrink below content width â€” prevents overflow */
+/* grid/flex children may shrink below content width — prevents overflow */
 .card > *, #wallet-ui > *, .account-row > * { min-width: 0; }
 
 #wallet-ui { display: grid; gap: 20px; }
@@ -164,7 +164,7 @@ button:focus-visible {
   overflow-wrap: break-word;
 }
 .msg.ok { color: var(--accent); }
-.msg.ok::before { content: 'âœ“ '; }
+.msg.ok::before { content: '\2713  '; }
 .msg.err {
   color: var(--err);
   background: rgba(239, 128, 121, 0.08);
