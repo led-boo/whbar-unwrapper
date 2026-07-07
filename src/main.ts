@@ -132,7 +132,7 @@ function prepare<T extends Transaction>(tx: T, owner: string): T {
 }
 
 async function unwrap(signer: Signer, owner: string, wad: Long) {
-  status('Step 1/2 — approve the allowance in your wallet…');
+  status('Step 1/2 - approve the allowance in your wallet...');
   const approve = prepare(
     new AccountAllowanceApproveTransaction().approveTokenAllowance(
       TokenId.fromString(CFG.token),
@@ -145,7 +145,7 @@ async function unwrap(signer: Signer, owner: string, wad: Long) {
   const approveReceipt = await (await approve.executeWithSigner(signer)).getReceiptWithSigner(signer);
   if (approveReceipt.status.toString() !== 'SUCCESS') throw new Error(`Approval failed: ${approveReceipt.status}`);
 
-  status('Step 2/2 — confirm the unwrap in your wallet…');
+  status('Step 2/2 - confirm the unwrap in your wallet...');
   const call = prepare(
     new ContractExecuteTransaction()
       .setContractId(ContractId.fromString(CFG.helper))
@@ -187,7 +187,7 @@ unwrapBtn.addEventListener('click', async () => {
   render();
   try {
     await unwrap(signer, accountId, toWad(amountInput.value));
-    status('Unwrapped — HBAR is in your wallet.', 'ok');
+    status('Unwrapped - HBAR is in your wallet.', 'ok');
     amountInput.value = '';
     refreshBalance();
   } catch (e) {
@@ -213,7 +213,7 @@ unwrapBtn.addEventListener('click', async () => {
   );
   await connector.init({ logger: 'error' });
   if (!connector.walletConnectClient) {
-    return fatal('WalletConnect failed to initialize — check the browser console for "Error initializing DAppConnector".');
+    return fatal('WalletConnect failed to initialize - check the browser console for "Error initializing DAppConnector".');
   }
   connector.walletConnectClient.on('session_delete', syncAccount);
   connectBtn.textContent = 'Connect wallet';
