@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WHBAR Unwrapper</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- ═══════════ EDIT THIS LINE: paste your WalletConnect project ID ═══════════
+         Free at https://cloud.reown.com — project IDs are public, safe to embed.
+         Set NETWORK to "mainnet" or "testnet". -->
+    <script>
+      window.APP_CONFIG = { PROJECT_ID: '5ef36263d0086df24cd4874896c2b002', NETWORK: 'mainnet' };
+    </script>
+
+    <main>
+      <div class="card">
+        <header>
+          <h1>Unwrap WHBAR</h1>
+          <span id="network-badge" class="badge"></span>
+        </header>
+
+        <p id="fatal" class="msg err" hidden></p>
+
+        <button id="connect-btn" disabled>Initializing…</button>
+
+        <div id="wallet-ui" hidden>
+          <div class="account-row">
+            <span id="account-id" class="mono"></span>
+            <button id="balance-btn" class="link mono"></button>
+          </div>
+
+          <div class="input-row">
+            <input id="amount" inputmode="decimal" placeholder="0.0" autocomplete="off" />
+            <span class="unit">WHBAR</span>
+          </div>
+
+          <p class="hint">You receive <strong id="receive" class="mono">0 HBAR</strong> — 1:1</p>
+
+          <button id="unwrap-btn" disabled>Unwrap</button>
+
+          <p id="status" class="msg" hidden></p>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
