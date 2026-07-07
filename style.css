@@ -1,11 +1,12 @@
 :root {
   --bg: #10141c;
   --panel: #171c27;
-  --line: #262e3e;
-  --text: #e8ecf4;
-  --dim: #8b94a7;
+  --line: #2b3444;
+  --text: #eef2f8;
+  --dim: #9aa4b8;      /* lifted for contrast */
   --accent: #6fd3c7;
-  --err: #e5716b;
+  --accent-ink: #07231f;
+  --err: #ef8079;
 }
 
 * { box-sizing: border-box; }
@@ -17,50 +18,162 @@ body {
   place-items: center;
   background: var(--bg);
   color: var(--text);
-  font: 15px/1.5 system-ui, sans-serif;
-  padding: 16px;
+  font: 17px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  padding: 20px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .card {
   width: 100%;
-  max-width: 380px;
-  padding: 20px;
+  max-width: 460px;
+  padding: 28px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 18px;
   background: var(--panel);
   display: grid;
-  gap: 14px;
+  gap: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
 }
 
-header { display: flex; justify-content: space-between; align-items: baseline; }
-h1 { margin: 0; font-size: 17px; font-weight: 600; }
-
+/* header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
 .badge {
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--dim);
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 2px 8px;
+  padding: 4px 12px;
 }
 
-.mono { font-family: ui-monospace, monospace; }
+.mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
 
-#wallet-ui { display: grid; gap: 14px; }
+#wallet-ui { display: grid; gap: 20px; }
 #wallet-ui[hidden] { display: none; }
 
+/* connected account line */
 .account-row {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
   color: var(--dim);
 }
+#account-id { overflow-wrap: anywhere; }
 
+/* amount input */
 .input-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   background: var(--bg);
   border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input-row:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(111, 211, 199, 0.18);
+}
+.input-row input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: 0;
+  outline: none;
+  color: var(--text);
+  font: 500 30px/1.2 ui-monospace, 'SF Mono', Menlo, monospace;
+}
+.input-row input::placeholder { color: var(--line); }
+.unit {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.hint {
+  margin: 0;
+  font-size: 16px;
+  color: var(--dim);
+}
+.hint strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* buttons */
+button {
+  border: 0;
+  border-radius: 14px;
+  padding: 17px;
+  font: 650 17px system-ui, sans-serif;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition: filter 0.12s, transform 0.05s;
+}
+button:hover:not(:disabled) { filter: brightness(1.08); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled {
+  background: var(--line);
+  color: var(--dim);
+  cursor: not-allowed;
+}
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* text buttons (balance / max) */
+.link {
+  background: none !important;
+  color: var(--accent);
+  padding: 0;
+  font-weight: 500;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.link:hover { text-decoration: underline; text-underline-offset: 3px; filter: none; }
+
+/* status messages */
+.msg {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--dim);
+  overflow-wrap: break-word;
+}
+.msg.ok { color: var(--accent); }
+.msg.ok::before { content: 'âœ“ '; }
+.msg.err {
+  color: var(--err);
+  background: rgba(239, 128, 121, 0.08);
+  border: 1px solid rgba(239, 128, 121, 0.25);
   border-radius: 10px;
+  padding: 12px 14px;
+}
+
+/* small screens */
+@media (max-width: 420px) {
+  .card { padding: 20px; }
+  .input-row input { font-size: 26px; }
+  h1 { font-size: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input-row, button { transition: none; }
+}
