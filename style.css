@@ -1,185 +1,406 @@
+/* =========================================================
+   WHBAR Unwrapper - stylesheet
+   Drop-in: <link rel="stylesheet" href="style.css">
+   Targets the existing markup (main > .card, #connect-btn,
+   #wallet-ui, .account-row, .input-row, .hint, .msg, etc.)
+   ========================================================= */
+
 :root {
-  --bg: #10141c;
-  --panel: #171c27;
-  --line: #2b3444;
-  --text: #eef2f8;
-  --dim: #9aa4b8;      /* lifted for contrast */
-  --accent: #6fd3c7;
-  --accent-ink: #07231f;
-  --err: #ef8079;
+  /* Brand - Hedera-ish teal on deep space */
+  --bg-0: #05080d;
+  --bg-1: #0b1220;
+  --bg-2: #111a2c;
+  --surface: rgba(20, 28, 46, 0.72);
+  --surface-strong: rgba(28, 38, 60, 0.9);
+  --border: rgba(148, 197, 214, 0.12);
+  --border-strong: rgba(148, 197, 214, 0.22);
+
+  --text: #e7eef7;
+  --text-dim: #93a3b8;
+  --text-muted: #64748b;
+
+  --accent: #5ee2c4;        /* mint */
+  --accent-2: #4dc4ff;      /* cyan */
+  --accent-ink: #04231d;
+
+  --danger: #ff6b7a;
+  --success: #26d07c;
+
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow-card:
+    0 1px 0 rgba(255,255,255,0.04) inset,
+    0 30px 80px -30px rgba(0,0,0,0.7),
+    0 10px 30px -12px rgba(77, 196, 255, 0.15);
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
 }
 
-* { box-sizing: border-box; }
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
 
 body {
   margin: 0;
-  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--text);
+  background:
+    radial-gradient(1200px 700px at 15% -10%, rgba(94, 226, 196, 0.14), transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(77, 196, 255, 0.12), transparent 55%),
+    radial-gradient(700px 500px at 50% 120%, rgba(120, 90, 255, 0.10), transparent 60%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1) 60%, var(--bg-0));
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+
+/* Subtle grid noise overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 75%);
+  z-index: 0;
+}
+
+/* ---------- Layout ---------- */
+main {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
-  background: var(--bg);
-  color: var(--text);
-  font: 17px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
-  padding: 20px;
-  -webkit-font-smoothing: antialiased;
+  padding: 32px 20px;
 }
 
+/* ---------- Card ---------- */
 .card {
   width: 100%;
-  max-width: 460px;
-  overflow: hidden;      /* belt-and-braces: nothing escapes the border */
+  max-width: 440px;
   padding: 28px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--panel);
-  display: grid;
-  gap: 20px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  animation: rise .5s cubic-bezier(.2,.7,.2,1) both;
 }
 
-/* header */
+/* Glow border sheen */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg,
+    rgba(94, 226, 196, 0.55),
+    rgba(77, 196, 255, 0.25) 40%,
+    transparent 60%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: .8;
+}
+
+/* Heading row (title + network badge) */
 header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 18px;
+  min-width: 0;
 }
-h1 {
+
+.card h1,
+.card .title {
   margin: 0;
-  font-size: 22px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-}
-.badge {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--dim);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 4px 12px;
-}
-
-.mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
-
-/* grid/flex children may shrink below content width — prevents overflow */
-.card > *, #wallet-ui > *, .account-row > * { min-width: 0; }
-
-#wallet-ui { display: grid; gap: 20px; }
-#wallet-ui[hidden] { display: none; }
-
-/* connected account line */
-.account-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 6px 12px;
-  font-size: 15px;
-  color: var(--dim);
-}
-#account-id { overflow-wrap: anywhere; }
-
-/* amount input */
-.input-row {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 16px 18px;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.input-row:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(111, 211, 199, 0.18);
-}
-.input-row input {
-  flex: 1;
+  gap: 10px;
   min-width: 0;
-  background: none;
-  border: 0;
-  outline: none;
-  color: var(--text);
-  font: 500 30px/1.2 ui-monospace, 'SF Mono', Menlo, monospace;
-}
-.input-row input::placeholder { color: var(--line); }
-.unit {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--dim);
 }
 
+.card h1::before,
+.card .title::before {
+  content: "";
+  flex-shrink: 0;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+/* ---------- Buttons ---------- */
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  color: inherit;
+}
+
+#connect-btn,
+#unwrap-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 650;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--accent-ink);
+  background: linear-gradient(180deg, #7ff0d4, var(--accent));
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.35) inset,
+    0 -6px 20px rgba(0,0,0,0.15) inset,
+    0 8px 24px -6px rgba(94, 226, 196, 0.55);
+  transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+#connect-btn:hover:not(:disabled),
+#unwrap-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 -6px 20px rgba(0,0,0,0.15) inset,
+    0 12px 30px -8px rgba(94, 226, 196, 0.7);
+}
+
+#connect-btn:active,
+#unwrap-btn:active { transform: translateY(0); }
+
+#connect-btn:disabled,
+#unwrap-btn:disabled {
+  cursor: not-allowed;
+  background: rgba(148, 197, 214, 0.08);
+  color: var(--text-muted);
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+
+/* ---------- Wallet UI ----------
+   Visibility is driven by the [hidden] attribute (set from main.ts),
+   NOT by a class. Do not add display rules that fight it. */
+#wallet-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+#wallet-ui[hidden] { display: none; }
+
+/* Account row */
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  min-width: 0;
+}
+
+#account-id {
+  color: var(--text-dim);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.link {
+  background: transparent;
+  color: var(--accent-2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: background .15s ease, color .15s ease;
+}
+.link:hover { background: rgba(77, 196, 255, 0.1); color: #7fd6ff; }
+
+/* Input row */
+.input-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 6px 6px 6px 18px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.input-row:focus-within {
+  border-color: rgba(94, 226, 196, 0.55);
+  box-shadow: 0 0 0 4px rgba(94, 226, 196, 0.12);
+}
+
+#amount {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  padding: 12px 8px;
+}
+#amount::placeholder { color: var(--text-muted); }
+
+/* Hide number spinners */
+#amount::-webkit-outer-spin-button,
+#amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+#amount[type="number"] { -moz-appearance: textfield; }
+
+.unit {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(94, 226, 196, 0.12);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* Hint line */
 .hint {
   margin: 0;
-  font-size: 16px;
-  color: var(--dim);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
 }
 .hint strong {
   color: var(--text);
   font-weight: 600;
 }
 
-/* buttons */
-button {
-  border: 0;
-  border-radius: 14px;
-  padding: 17px;
-  font: 650 17px system-ui, sans-serif;
-  background: var(--accent);
-  color: var(--accent-ink);
-  cursor: pointer;
-  transition: filter 0.12s, transform 0.05s;
-}
-button:hover:not(:disabled) { filter: brightness(1.08); }
-button:active:not(:disabled) { transform: translateY(1px); }
-button:disabled {
-  background: var(--line);
-  color: var(--dim);
-  cursor: not-allowed;
-}
-button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
-/* text buttons (balance / max) */
-.link {
-  background: none !important;
-  color: var(--accent);
-  padding: 0;
-  font-weight: 500;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-  text-align: right;
-}
-.link:hover { text-decoration: underline; text-underline-offset: 3px; filter: none; }
-
-/* status messages */
+/* ---------- Messages ---------- */
 .msg {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--dim);
-  overflow-wrap: break-word;
+  margin: 4px 0 0;
+  min-height: 1em;
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  overflow-wrap: anywhere;
 }
-.msg.ok { color: var(--accent); }
+.msg.err   { color: var(--danger); }
+.msg.ok    { color: var(--success); }
 .msg.ok::before { content: '\2713  '; }
-.msg.err {
-  color: var(--err);
-  background: rgba(239, 128, 121, 0.08);
-  border: 1px solid rgba(239, 128, 121, 0.25);
-  border-radius: 10px;
-  padding: 12px 14px;
+
+#fatal:not(:empty):not([hidden]) {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 107, 122, 0.08);
+  border: 1px solid rgba(255, 107, 122, 0.25);
+  border-radius: var(--radius-sm);
+  text-align: left;
 }
 
-/* small screens */
-@media (max-width: 420px) {
-  .card { padding: 20px; }
-  .input-row input { font-size: 26px; }
-  h1 { font-size: 20px; }
+/* ---------- Focus ring (accessibility) ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- Motion ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px) scale(.985); }
+  to   { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .input-row, button { transition: none; }
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 480px) {
+  main { padding: 20px 14px; }
+  .card { padding: 22px; border-radius: 18px; }
+  #amount { font-size: 20px; }
+}
+
+@media (max-width: 360px) {
+  main { padding: 16px 10px; }
+
+  .card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .card h1,
+  .card .title {
+    font-size: 17px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  #connect-btn,
+  #unwrap-btn {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .account-row {
+    gap: 4px 10px;
+    padding: 10px 12px;
+  }
+  #account-id { font-size: 12px; }
+  .link { font-size: 12px; padding: 2px 6px; }
+
+  .input-row { padding: 4px 4px 4px 14px; }
+  #amount {
+    font-size: 18px;
+    padding: 10px 6px;
+  }
+  .unit {
+    padding: 6px 10px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .hint { font-size: 12px; }
+  .msg  { font-size: 12px; }
 }
